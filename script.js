@@ -141,6 +141,8 @@ const totalRegistrosSpan = document.getElementById("totalRegistros");
 const feedbackDataDiv = document.getElementById("feedbackData");
 const modalAjuda = document.getElementById("modalAjuda");
 const btnAjuda = document.getElementById("btnAjuda");
+const btnToggleTema = document.getElementById("btnToggleTema");
+const iconTema = document.getElementById("iconTema");
 const btnFecharModal = document.getElementsByClassName("close-button")[0];
 const btnDownloadModeloCAC = document.getElementById("btnDownloadModeloCAC");
 const btnDownloadModeloCAB = document.getElementById("btnDownloadModeloCAB");
@@ -161,14 +163,19 @@ let camposAnalisados = [];
 // --- Funções Auxiliares ---
 
 function log(mensagem) {
+    if (!logArea) return;
     logArea.textContent += `\n[${new Date().toLocaleTimeString()}] ${mensagem}`;
     logArea.scrollTop = logArea.scrollHeight;
 }
 
 function atualizarStatusAcumulado() {
     const total = dadosGlobaisAcumulados.length;
-    totalRegistrosSpan.textContent = total;
-    botaoGerarFinal.disabled = total === 0;
+    if (totalRegistrosSpan) {
+        totalRegistrosSpan.textContent = total;
+    }
+    if (botaoGerarFinal) {
+        botaoGerarFinal.disabled = total === 0;
+    }
 }
 
 function limparTextoParaCSV(texto) {
@@ -182,6 +189,7 @@ function normalizarCampo(texto) {
 }
 
 function obterConfiguracaoAtual() {
+    if (!selectTipo) return null;
     const tipo = selectTipo.value;
 
     if (tipo === "CUSTOM") {
@@ -189,23 +197,28 @@ function obterConfiguracaoAtual() {
         const campos = [];
         const camposObrigatorios = [];
 
-        const inputsColunas = listaColunas.querySelectorAll(".input-coluna");
-        inputsColunas.forEach((input) => {
-            const nomeCampo = input.value.trim();
-            if (nomeCampo) {
-                campos.push(nomeCampo);
-            }
-        });
+        if (listaColunas) {
+            const inputsColunas =
+                listaColunas.querySelectorAll(".input-coluna");
+            inputsColunas.forEach((input) => {
+                const nomeCampo = input.value.trim();
+                if (nomeCampo) {
+                    campos.push(nomeCampo);
+                }
+            });
+        }
 
-        const checkboxes = checkboxesObrigatorios.querySelectorAll(
-            'input[type="checkbox"]:checked'
-        );
-        checkboxes.forEach((checkbox) => {
-            const nomeCampo = checkbox.value;
-            if (campos.includes(nomeCampo)) {
-                camposObrigatorios.push(nomeCampo);
-            }
-        });
+        if (checkboxesObrigatorios) {
+            const checkboxes = checkboxesObrigatorios.querySelectorAll(
+                'input[type="checkbox"]:checked'
+            );
+            checkboxes.forEach((checkbox) => {
+                const nomeCampo = checkbox.value;
+                if (campos.includes(nomeCampo)) {
+                    camposObrigatorios.push(nomeCampo);
+                }
+            });
+        }
 
         return {
             campos: campos,
@@ -366,17 +379,21 @@ function avancarData(dataAnteriorString) {
     const dataProximaString = proximoDia.toISOString().split("T")[0];
     const dataProximaFormatada = proximoDia.toLocaleDateString("pt-BR");
 
-    inputData.value = dataProximaString;
+    if (inputData) {
+        inputData.value = dataProximaString;
+    }
 
-    const mensagem = `Próximo dia: **${dataAnteriorFormatada}** → **${dataProximaFormatada}**`;
-    feedbackDataDiv.innerHTML = mensagem;
-
-    feedbackDataDiv.classList.add("show");
+    if (feedbackDataDiv) {
+        const mensagem = `Próximo dia: **${dataAnteriorFormatada}** → **${dataProximaFormatada}**`;
+        feedbackDataDiv.innerHTML = mensagem;
+        feedbackDataDiv.classList.add("show");
+    }
 }
 
 // --- Funções de Interface para Colunas Personalizadas ---
 
 function adicionarColuna(nomeCampo = "") {
+    if (!listaColunas) return;
     contadorColunas++;
     const idColuna = `coluna_${contadorColunas}`;
 
@@ -395,10 +412,12 @@ function adicionarColuna(nomeCampo = "") {
 
     // Adicionar listener para atualizar checkboxes quando o campo mudar
     const input = divColuna.querySelector(".input-coluna");
-    input.addEventListener("input", () => {
-        atualizarCheckboxesObrigatorios();
-        verificarEstadoProcessamento();
-    });
+    if (input) {
+        input.addEventListener("input", () => {
+            atualizarCheckboxesObrigatorios();
+            verificarEstadoProcessamento();
+        });
+    }
 
     atualizarCheckboxesObrigatorios();
     verificarEstadoProcessamento();
@@ -414,8 +433,10 @@ window.removerColuna = function (idColuna) {
 };
 
 function atualizarCheckboxesObrigatorios() {
+    if (!checkboxesObrigatorios) return;
     checkboxesObrigatorios.innerHTML = "";
 
+    if (!listaColunas) return;
     const inputsColunas = listaColunas.querySelectorAll(".input-coluna");
     inputsColunas.forEach((input) => {
         const nomeCampo = input.value.trim();
@@ -448,6 +469,7 @@ function atualizarCheckboxesObrigatorios() {
 }
 
 function atualizarInterfacePorTipo() {
+    if (!selectTipo) return;
     const tipo = selectTipo.value;
 
     // Limpar dados acumulados quando mudar o tipo
@@ -456,16 +478,27 @@ function atualizarInterfacePorTipo() {
     log(`Tipo de processamento alterado para: ${tipo}`);
 
     if (tipo === "CUSTOM") {
-        painelColunas.style.display = "block";
+        if (painelColunas) {
+            painelColunas.style.display = "block";
+        }
         // Se não houver colunas, adicionar uma vazia
-        if (listaColunas.querySelectorAll(".item-coluna").length === 0) {
+        if (
+            listaColunas &&
+            listaColunas.querySelectorAll(".item-coluna").length === 0
+        ) {
             adicionarColuna();
         }
     } else {
-        painelColunas.style.display = "none";
+        if (painelColunas) {
+            painelColunas.style.display = "none";
+        }
         // Limpar colunas personalizadas
-        listaColunas.innerHTML = "";
-        checkboxesObrigatorios.innerHTML = "";
+        if (listaColunas) {
+            listaColunas.innerHTML = "";
+        }
+        if (checkboxesObrigatorios) {
+            checkboxesObrigatorios.innerHTML = "";
+        }
     }
 
     // Atualizar configuração atual
@@ -485,13 +518,19 @@ function verificarEstadoProcessamento() {
         configuracaoAtual.campos &&
         configuracaoAtual.campos.length > 0;
     const temArquivo = conteudoTxt !== null;
-    const temData = inputData.value !== "";
+    const temData = inputData && inputData.value !== "";
 
-    botaoProcessarDia.disabled = !(temConfiguracao && temArquivo && temData);
+    if (botaoProcessarDia) {
+        botaoProcessarDia.disabled = !(
+            temConfiguracao &&
+            temArquivo &&
+            temData
+        );
+    }
 }
 
 function atualizarExemploModelo() {
-    if (!configuracaoAtual) return;
+    if (!configuracaoAtual || !exemploModelo) return;
 
     exemploModelo.innerHTML = `<pre>${configuracaoAtual.modelo}</pre>`;
 }
@@ -680,6 +719,11 @@ function aplicarCamposDetectados() {
         return;
     }
 
+    if (!listaColunas) {
+        log("ERRO: Elemento listaColunas não encontrado.");
+        return;
+    }
+
     // Limpar colunas existentes
     listaColunas.innerHTML = "";
 
@@ -704,7 +748,9 @@ function aplicarCamposDetectados() {
     });
 
     // Fechar modal
-    modalEdicaoModelo.style.display = "none";
+    if (modalEdicaoModelo) {
+        modalEdicaoModelo.style.display = "none";
+    }
 
     log(
         `Campos aplicados: ${camposAnalisados.length} campo(s) configurado(s).`
@@ -715,168 +761,192 @@ function aplicarCamposDetectados() {
 // --- Event Listeners ---
 
 // Mudança de tipo de processamento
-selectTipo.addEventListener("change", atualizarInterfacePorTipo);
+if (selectTipo) {
+    selectTipo.addEventListener("change", atualizarInterfacePorTipo);
+}
 
 // Adicionar coluna personalizada
-btnAdicionarColuna.addEventListener("click", () => {
-    adicionarColuna();
-});
+if (btnAdicionarColuna) {
+    btnAdicionarColuna.addEventListener("click", () => {
+        adicionarColuna();
+    });
+}
 
 // Carregamento de arquivo
-inputArquivo.addEventListener("change", (e) => {
-    const arquivo = e.target.files[0];
-    if (arquivo) {
-        log(`Arquivo '${arquivo.name}' carregado. Lendo conteúdo...`);
-        const leitor = new FileReader();
+if (inputArquivo) {
+    inputArquivo.addEventListener("change", (e) => {
+        const arquivo = e.target.files[0];
+        if (arquivo) {
+            log(`Arquivo '${arquivo.name}' carregado. Lendo conteúdo...`);
+            const leitor = new FileReader();
 
-        leitor.onload = (evento) => {
-            conteudoTxt = evento.target.result;
-            log("Leitura do TXT concluída. Pronto para processar o dia.");
-            verificarEstadoProcessamento();
-        };
+            leitor.onload = (evento) => {
+                conteudoTxt = evento.target.result;
+                log("Leitura do TXT concluída. Pronto para processar o dia.");
+                verificarEstadoProcessamento();
+            };
 
-        leitor.onerror = () => {
-            log("ERRO: Falha ao ler o arquivo.");
+            leitor.onerror = () => {
+                log("ERRO: Falha ao ler o arquivo.");
+                conteudoTxt = null;
+                verificarEstadoProcessamento();
+            };
+
+            leitor.readAsText(arquivo, "UTF-8");
+        } else {
             conteudoTxt = null;
             verificarEstadoProcessamento();
-        };
-
-        leitor.readAsText(arquivo, "UTF-8");
-    } else {
-        conteudoTxt = null;
-        verificarEstadoProcessamento();
-    }
-});
-
-// Verificar estado quando a data mudar
-inputData.addEventListener("change", verificarEstadoProcessamento);
-
-// Processar dia
-botaoProcessarDia.addEventListener("click", () => {
-    if (!conteudoTxt) {
-        log(
-            "ERRO: Nenhum arquivo TXT carregado. Por favor, carregue o arquivo do dia."
-        );
-        return;
-    }
-
-    const dataManual = inputData.value;
-    if (!dataManual) {
-        log("ERRO: Por favor, insira a Data de Inserção do Lote.");
-        inputData.focus();
-        return;
-    }
-
-    // Atualizar configuração antes de processar
-    configuracaoAtual = obterConfiguracaoAtual();
-
-    if (
-        !configuracaoAtual ||
-        !configuracaoAtual.campos ||
-        configuracaoAtual.campos.length === 0
-    ) {
-        log(
-            "ERRO: Nenhum campo configurado. Por favor, configure os campos antes de processar."
-        );
-        return;
-    }
-
-    log(`Iniciando processamento do dia: ${dataManual}...`);
-
-    const SEPARADOR_REGEX = /={20,}\s*\*{20,}| \*{20,}\s*={20,}/g;
-
-    const blocosBrutos = conteudoTxt
-        .split(SEPARADOR_REGEX)
-        .filter((bloco) => bloco.trim() !== "");
-
-    const blocosFinais = blocosBrutos
-        .map((b) =>
-            b
-                .replace(/={20,}/g, "")
-                .replace(/\*{20,}/g, "")
-                .trim()
-        )
-        .filter((b) => b.length > 0);
-
-    const dadosDoDia = [];
-    let contadorFiltrado = 0;
-
-    blocosFinais.forEach((bloco) => {
-        const dadosBloco = processarBloco(bloco);
-
-        if (filtrarBloco(dadosBloco)) {
-            dadosBloco.DataInsercao = dataManual;
-            dadosDoDia.push(dadosBloco);
-            contadorFiltrado++;
         }
     });
+}
 
-    dadosGlobaisAcumulados = dadosGlobaisAcumulados.concat(dadosDoDia);
+// Verificar estado quando a data mudar
+if (inputData) {
+    inputData.addEventListener("change", verificarEstadoProcessamento);
+}
 
-    log(`Processamento do dia ${dataManual} concluído.`);
-    log(`-> Registros Válidos adicionados: ${contadorFiltrado}`);
+// Processar dia
+if (botaoProcessarDia) {
+    botaoProcessarDia.addEventListener("click", () => {
+        if (!conteudoTxt) {
+            log(
+                "ERRO: Nenhum arquivo TXT carregado. Por favor, carregue o arquivo do dia."
+            );
+            return;
+        }
 
-    // Limpeza e avanço para o próximo dia
-    inputArquivo.value = "";
-    conteudoTxt = null;
-    botaoProcessarDia.disabled = true;
+        const dataManual = inputData.value;
+        if (!dataManual) {
+            log("ERRO: Por favor, insira a Data de Inserção do Lote.");
+            inputData.focus();
+            return;
+        }
 
-    avancarData(dataManual);
+        // Atualizar configuração antes de processar
+        configuracaoAtual = obterConfiguracaoAtual();
 
-    log(
-        `-> Total Geral Acumulado: ${dadosGlobaisAcumulados.length} registros.`
-    );
-    atualizarStatusAcumulado();
-});
+        if (
+            !configuracaoAtual ||
+            !configuracaoAtual.campos ||
+            configuracaoAtual.campos.length === 0
+        ) {
+            log(
+                "ERRO: Nenhum campo configurado. Por favor, configure os campos antes de processar."
+            );
+            return;
+        }
+
+        log(`Iniciando processamento do dia: ${dataManual}...`);
+
+        const SEPARADOR_REGEX = /={20,}\s*\*{20,}| \*{20,}\s*={20,}/g;
+
+        const blocosBrutos = conteudoTxt
+            .split(SEPARADOR_REGEX)
+            .filter((bloco) => bloco.trim() !== "");
+
+        const blocosFinais = blocosBrutos
+            .map((b) =>
+                b
+                    .replace(/={20,}/g, "")
+                    .replace(/\*{20,}/g, "")
+                    .trim()
+            )
+            .filter((b) => b.length > 0);
+
+        const dadosDoDia = [];
+        let contadorFiltrado = 0;
+
+        blocosFinais.forEach((bloco) => {
+            const dadosBloco = processarBloco(bloco);
+
+            if (filtrarBloco(dadosBloco)) {
+                dadosBloco.DataInsercao = dataManual;
+                dadosDoDia.push(dadosBloco);
+                contadorFiltrado++;
+            }
+        });
+
+        dadosGlobaisAcumulados = dadosGlobaisAcumulados.concat(dadosDoDia);
+
+        log(`Processamento do dia ${dataManual} concluído.`);
+        log(`-> Registros Válidos adicionados: ${contadorFiltrado}`);
+
+        // Limpeza e avanço para o próximo dia
+        inputArquivo.value = "";
+        conteudoTxt = null;
+        botaoProcessarDia.disabled = true;
+
+        avancarData(dataManual);
+
+        log(
+            `-> Total Geral Acumulado: ${dadosGlobaisAcumulados.length} registros.`
+        );
+        atualizarStatusAcumulado();
+    });
+}
 
 // Gerar planilha final
-botaoGerarFinal.addEventListener("click", () => {
-    if (dadosGlobaisAcumulados.length === 0) {
-        log("AVISO: Não há registros acumulados para gerar a planilha.");
-        return;
-    }
+if (botaoGerarFinal) {
+    botaoGerarFinal.addEventListener("click", () => {
+        if (dadosGlobaisAcumulados.length === 0) {
+            log("AVISO: Não há registros acumulados para gerar a planilha.");
+            return;
+        }
 
-    // Atualizar configuração antes de gerar
-    configuracaoAtual = obterConfiguracaoAtual();
+        // Atualizar configuração antes de gerar
+        configuracaoAtual = obterConfiguracaoAtual();
 
-    log("Gerando Planilha Final com todos os dados acumulados...");
+        log("Gerando Planilha Final com todos os dados acumulados...");
 
-    const csvContent = gerarCSV(dadosGlobaisAcumulados);
+        const csvContent = gerarCSV(dadosGlobaisAcumulados);
 
-    const hoje = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    const nomeArquivo = `${configuracaoAtual.nomeArquivo}${hoje}.csv`;
+        const hoje = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+        const nomeArquivo = `${configuracaoAtual.nomeArquivo}${hoje}.csv`;
 
-    // Download do CSV
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", nomeArquivo);
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+        // Download do CSV
+        const blob = new Blob([csvContent], {
+            type: "text/csv;charset=utf-8;",
+        });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", nomeArquivo);
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
 
-    log(`SUCESSO: Arquivo MESTRE '${nomeArquivo}' gerado e download iniciado.`);
-});
+        log(
+            `SUCESSO: Arquivo MESTRE '${nomeArquivo}' gerado e download iniciado.`
+        );
+    });
+}
 
 // Modal de ajuda
-btnAjuda.onclick = function () {
-    atualizarExemploModelo();
-    modalAjuda.style.display = "flex";
-    modalAjuda.style.alignItems = "center";
-    modalAjuda.style.justifyContent = "center";
-};
+if (btnAjuda) {
+    btnAjuda.onclick = function () {
+        atualizarExemploModelo();
+        if (modalAjuda) {
+            modalAjuda.style.display = "flex";
+            modalAjuda.style.alignItems = "center";
+            modalAjuda.style.justifyContent = "center";
+        }
+    };
 
-btnFecharModal.onclick = function () {
-    modalAjuda.style.display = "none";
-};
-
-window.onclick = function (event) {
-    if (event.target == modalAjuda) {
-        modalAjuda.style.display = "none";
+    if (btnFecharModal) {
+        btnFecharModal.onclick = function () {
+            if (modalAjuda) {
+                modalAjuda.style.display = "none";
+            }
+        };
     }
-};
+
+    window.onclick = function (event) {
+        if (modalAjuda && event.target == modalAjuda) {
+            modalAjuda.style.display = "none";
+        }
+    };
+}
 
 // Download dos modelos
 if (btnDownloadModeloCAC) {
@@ -980,9 +1050,70 @@ if (modalEdicaoModelo) {
     });
 }
 
-// Inicialização
-atualizarInterfacePorTipo();
-log(
-    'Interface pronta. Selecione o tipo de processamento, insira a data, carregue o TXT e clique em "Processar e Adicionar Dia".'
-);
-atualizarStatusAcumulado();
+// Inicialização - Aguardar DOM estar pronto
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", inicializar);
+} else {
+    inicializar();
+}
+
+// --- Funções de Tema ---
+
+function aplicarTema(tema) {
+    const html = document.documentElement;
+    if (tema === "dark") {
+        html.setAttribute("data-theme", "dark");
+        if (iconTema) {
+            iconTema.className = "fas fa-sun";
+        }
+        localStorage.setItem("tema", "dark");
+    } else {
+        html.removeAttribute("data-theme");
+        if (iconTema) {
+            iconTema.className = "fas fa-moon";
+        }
+        localStorage.setItem("tema", "light");
+    }
+}
+
+function alternarTema() {
+    const temaAtual = document.documentElement.getAttribute("data-theme");
+    if (temaAtual === "dark") {
+        aplicarTema("light");
+    } else {
+        aplicarTema("dark");
+    }
+}
+
+function carregarTemaSalvo() {
+    const temaSalvo = localStorage.getItem("tema");
+    if (temaSalvo) {
+        aplicarTema(temaSalvo);
+    } else {
+        // Verificar preferência do sistema
+        if (
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+        ) {
+            aplicarTema("dark");
+        }
+    }
+}
+
+// Event listener para toggle de tema
+if (btnToggleTema) {
+    btnToggleTema.addEventListener("click", alternarTema);
+}
+
+function inicializar() {
+    // Carregar tema salvo primeiro
+    carregarTemaSalvo();
+
+    if (selectTipo) {
+        atualizarInterfacePorTipo();
+    }
+    log(
+        'Interface pronta. Selecione o tipo de processamento, insira a data, carregue o TXT e clique em "Processar e Adicionar Dia".'
+    );
+    atualizarStatusAcumulado();
+}
