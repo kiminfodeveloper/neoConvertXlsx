@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Planilha Mestra - Bancário</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>🏦 Conversor Mestre TXT para Planilha CSV - Bancário</h1>
+        <p>Processe lotes de dados de dias diferentes e gere uma planilha consolidada.</p>
+        
+        <button id="btnAjuda" class="help-icon" title="Ajuda e Instruções">
+            <i class="fas fa-question-circle"></i>
+        </button>
+    </header>
+
+    <main class="container">
+        <section class="controls-panel">
+            <h2>Controle de Processamento por Dia</h2>
+            
+            <div class="input-group">
+                <label for="dataManual">**1. Data de Inserção do Lote (Obrigatória):**</label>
+                <div id="feedbackData" class="feedback-popup"></div> 
+                <input type="date" id="dataManual" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="arquivoTxt">**2. Carregar Arquivo TXT do Dia:**</label>
+                <input type="file" id="arquivoTxt" accept=".txt" required>
+            </div>
+            
+            <button id="processarDia" disabled class="btn-primary">3. Processar e Adicionar Dia</button>
+            
+            <hr class="divider">
+            
+            <button id="gerarPlanilhaFinal" disabled class="btn-secondary">4. Gerar Planilha FINAL (CSV)</button>
+        </section>
+
+        <section class="log-panel">
+            <h3>Registro de Processamento</h3>
+            <div id="resumo" class="resumo-box">
+                <p>📊 **Total de Registros Acumulados:** <span id="totalRegistros">0</span></p>
+            </div>
+            <pre id="logArea">Aguardando carregamento do arquivo...</pre>
+        </section>
+    </main>
+
+    <div id="modalAjuda" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Como Usar o Conversor Mestre Bancário</h2>
+            
+            <p>Este sistema consolida dados bancários de vários dias em uma única planilha CSV mestra.</p>
+            
+            <hr>
+
+            <h3>Fluxo de Trabalho:</h3>
+            <ol>
+                <li>
+                    <strong>Insira a Data:</strong> No campo **1**, digite a data do lote.
+                </li>
+                <li>
+                    <strong>Carregue o Arquivo:</strong> No campo **2**, selecione o arquivo TXT.
+                </li>
+                <li>
+                    <strong>Processe o Dia:</strong> Clique em **"Processar e Adicionar Dia"** (**3**). A data avançará automaticamente.
+                </li>
+                <li>
+                    <strong>Repita:</strong> Repita os passos para todos os dias.
+                </li>
+                <li>
+                    <strong>Gere o Final:</strong> Clique em **"Gerar Planilha FINAL (CSV)"** (**4**) para baixar.
+                </li>
+            </ol>
+
+            <hr>
+
+            <h3>Formato do Arquivo TXT (Com Separadores)</h3>
+            <p>O arquivo TXT deve seguir rigorosamente a estrutura de **campos com dois pontos** e usar a combinação de **separadores** para delimitar cada bloco:</p>
+            
+            <pre>==============================================================</pre>
+            <pre>***********************************************************</pre>
+            
+            <button id="btnDownloadModelo" class="btn-secondary" style="width: auto; margin-top: 15px;">
+                <i class="fas fa-download"></i> Baixar Arquivo TXT Modelo Bancário
+            </button>
+            
+            <pre style="margin-top: 15px;">
+Bancário: Nome do Funcionário (Obrigatório)
+CPF: 123.456.789-00
+Agência: 0001
+Banco: Bradesco (Obrigatório)
+
+Produto: Cartão de Crédito (Obrigatório)
+CNPJ/Contrato: 987654321 (Obrigatório)
+
+Motivo: Cancelamento
+Evento: Aumento de limite
+
+Descrição: 
+O cliente solicitou o cancelamento devido a juros altos.
+
+Omni: 
+Referência: 
+==============================================================
+***********************************************************
+Bancário: Fulano de Tal
+CPF: 111.222.333-44
+Agência: 0002
+Banco: Itau
+... (e assim por diante)
+            </pre>
+            
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
