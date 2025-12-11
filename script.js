@@ -9,7 +9,7 @@ const CONFIGURACOES_TIPO = {
             "Banco",
             "Ligação",
             "Omni",
-            "Referência",
+            "Referencia",
         ],
         camposObrigatorios: [
             "Consultor",
@@ -46,15 +46,15 @@ Tabulacoes incorretas, OMNI nao espelhada
         campos: [
             "Bancário",
             "CPF",
-            "Agência",
+            "Agencia",
             "Banco",
             "Produto",
             "CNPJ/Contrato",
             "Motivo",
             "Evento",
-            "Descrição",
+            "Descricao",
             "Omni",
-            "Referência",
+            "Referencia",
         ],
         camposObrigatorios: [
             "Bancário",
@@ -78,8 +78,8 @@ Evento: Aumento de limite
 Descricao: 
 O cliente solicitou o cancelamento devido a juros altos.
 
-Omni: 
-Referencia: 
+Omni: 123
+Referencia: 456
 ==============================================================
 ***********************************************************
 Bancário: Fulano de Tal
@@ -250,43 +250,78 @@ function processarBloco(blocoTexto) {
 
     // Remove texto específico do CAC se presente
     if (selectTipo.value === "CAC") {
+        // Remover ambas as versões do texto problemático
         textoLimpo = textoLimpo
             .replace(/Tabulações incorretas, OMNI não espelhada/g, "")
+            .replace(/Tabulacoes incorretas, OMNI nao espelhada/g, "")
             .trim();
     }
 
-    const campoRegex = new RegExp(
-        `(${configuracaoAtual.campos
-            .map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
-            .join(":|")}:)`,
-        "g"
-    );
-    const matches = Array.from(textoLimpo.matchAll(campoRegex));
+    // Processar linha por linha para extrair campos corretamente
+    const linhas = textoLimpo.split("\n");
+    let campoAtual = null;
+    let valorAtual = "";
 
-    if (matches.length === 0) return dados;
+    for (let i = 0; i < linhas.length; i++) {
+        const linha = linhas[i];
 
-    for (let i = 0; i < matches.length; i++) {
-        const match = matches[i];
-        const nomeCampoComDoisPontos = match[0].trim();
-        const nomeCampo = nomeCampoComDoisPontos.slice(0, -1).trim();
-        const chaveNormalizada = normalizarCampo(nomeCampo);
-        const inicioValor = match.index + nomeCampoComDoisPontos.length;
+        // Verificar se esta linha é um cabeçalho de campo
+        let campoEncontrado = null;
+        let valorCampo = "";
 
-        const fimValor =
-            i + 1 < matches.length ? matches[i + 1].index : textoLimpo.length;
+        for (const campo of configuracaoAtual.campos) {
+            const campoPattern = new RegExp(
+                `^\\s*${campo.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&")}\\s*:`,
+                "i"
+            );
+            const match = linha.match(campoPattern);
 
-        let valor = textoLimpo.substring(inicioValor, fimValor).trim();
+            if (match) {
+                campoEncontrado = normalizarCampo(campo);
+                // Extrair o valor após os ":" e espaços
+                valorCampo = linha.substring(match[0].length).trim();
+                break;
+            }
+        }
 
-        // Para CAB, usa " | " como separador, para outros usa espaço
-        const separador = selectTipo.value === "CAB" ? " | " : " ";
-        valor = valor
+        if (campoEncontrado) {
+            // Se já estávamos processando um campo, salvar seu valor
+            if (campoAtual !== null) {
+                // Processar o valor acumulado
+                let valorProcessado = valorAtual
+                    .split("\n")
+                    .map((line) => limparTextoParaCSV(line).trim())
+                    .filter((line) => line.length > 0)
+                    .join(selectTipo.value === "CAB" ? " | " : " ")
+                    .trim();
+
+                dados[campoAtual] = valorProcessado;
+            }
+
+            // Começar a processar o novo campo
+            campoAtual = campoEncontrado;
+            valorAtual = valorCampo;
+        } else if (campoAtual !== null && linha.trim() !== "") {
+            // Adicionar linha ao valor atual apenas se não for um separador vazio
+            if (valorAtual !== "") {
+                valorAtual += "\n" + linha;
+            } else {
+                valorAtual = linha;
+            }
+        }
+    }
+
+    // Não esquecer de salvar o último campo processado
+    if (campoAtual !== null) {
+        // Processar o valor acumulado
+        let valorProcessado = valorAtual
             .split("\n")
             .map((line) => limparTextoParaCSV(line).trim())
             .filter((line) => line.length > 0)
-            .join(separador)
+            .join(selectTipo.value === "CAB" ? " | " : " ")
             .trim();
 
-        dados[chaveNormalizada] = valor;
+        dados[campoAtual] = valorProcessado;
     }
 
     return dados;
@@ -831,7 +866,7 @@ if (botaoProcessarDia) {
             configuracaoAtual.campos.length === 0
         ) {
             log(
-                "ERRO: Nenhum campo configurado. Por favor, configure os campos antes de processar."
+                "ERRO: Nenhuma campo configurado. Por favor, configure os campos antes de processar."
             );
             return;
         }
