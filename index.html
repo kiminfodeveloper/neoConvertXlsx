@@ -12,22 +12,60 @@
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
         />
-        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="src/css/style.css" />
     </head>
     <body>
-        <header>
-            <h1>
-                <i class="fas fa-file-csv" style="margin-right: 12px"></i>
-                Conversor Mestre TXT para Planilha CSV
-            </h1>
-            <p>
-                <i
-                    class="fas fa-magic"
-                    style="margin-right: 8px; opacity: 0.9"
-                ></i>
-                Processe lotes de dados de dias diferentes e gere uma planilha
-                consolidada com facilidade
-            </p>
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <i class="fas fa-file-csv"></i>
+                    <span>NeoConvertXlsx</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#inicio" class="nav-link active" data-page="inicio">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#convert" class="nav-link" data-page="convert">Converter</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#sobre" class="nav-link" data-page="sobre">Sobre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="https://github.com/kiminfodeveloper/neoConvertXlsx" target="_blank" class="nav-link">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <button id="btnVersao2" class="nav-button">
+                            <i class="fas fa-rocket"></i> Versão 2.0
+                        </button>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Página Início -->
+        <section id="inicio" class="page active">
+            <header>
+                <h1>
+                    <i class="fas fa-file-csv" style="margin-right: 12px"></i>
+                    Conversor Mestre TXT para Planilha CSV
+                </h1>
+                <p>
+                    <i
+                        class="fas fa-magic"
+                        style="margin-right: 8px; opacity: 0.9"
+                    ></i>
+                    Processe lotes de dados de dias diferentes e gere uma planilha
+                    consolidada com facilidade
+                </p>
 
             <button id="btnAjuda" class="help-icon" title="Ajuda e Instruções">
                 <i class="fas fa-question-circle"></i>
@@ -284,6 +322,224 @@ Aguardando configuração e carregamento do arquivo...</pre
                 >
             </section>
         </main>
+        </section>
+
+        <!-- Modal de Ajuda (Global) -->
+        <div id="modalAjuda" class="modal">
+            <div class="modal-content">
+                <span class="close-button" id="btnFecharModalAjuda"
+                    >&times;</span
+                >
+                <h2>Como Usar o Conversor Mestre Unificado</h2>
+
+                <p>
+                    Este sistema permite que você consolide dados de vários dias
+                    em uma única planilha CSV mestra, com suporte para
+                    diferentes tipos de processamento.
+                </p>
+
+                <hr />
+
+                <h3>Tipos de Processamento:</h3>
+                <ul>
+                    <li>
+                        <strong>CAC/CAB FROTA - Sistema Principal:</strong> Processa dados com campos de Solicitante, Identificação, Motivo, Contrato/CNPJ, Banco, Origem, Omni e Referência.
+                    </li>
+                    <li>
+                        <strong>CAC - Consultor:</strong> Processa dados de
+                        consultores com campos específicos.
+                    </li>
+                    <li>
+                        <strong>CAB - Bancário:</strong> Processa dados
+                        bancários com campos específicos.
+                    </li>
+                    <li>
+                        <strong>CUSTOM - Personalizado:</strong> Permite definir
+                        seus próprios campos e colunas.
+                    </li>
+                </ul>
+
+                <hr />
+
+                <h3>Fluxo de Trabalho:</h3>
+                <ol>
+                    <li>
+                        <strong>Selecione o Tipo:</strong> Escolha entre CAC/CAB FROTA, CAC,
+                        CAB ou CUSTOM.
+                    </li>
+                    <li>
+                        <strong>Configure Colunas (se CUSTOM):</strong> Defina
+                        os campos que serão extraídos e quais são obrigatórios.
+                    </li>
+                    <li>
+                        <strong>Insira a Data:</strong> No campo **1**, digite a
+                        data do lote que será processado.
+                    </li>
+                    <li>
+                        <strong>Carregue o Arquivo:</strong> No campo **2**,
+                        selecione o arquivo TXT correspondente.
+                    </li>
+                    <li>
+                        <strong>Processe o Dia:</strong> Clique em **"Processar
+                        e Adicionar Dia"** (**3**). A data avançará
+                        automaticamente.
+                    </li>
+                    <li>
+                        <strong>Repita:</strong> Repita os passos para todos os
+                        dias.
+                    </li>
+                    <li>
+                        <strong>Gere o Final:</strong> Clique em **"Gerar
+                        Planilha FINAL (CSV)"** (**4**) para baixar.
+                    </li>
+                </ol>
+
+                <hr />
+
+                <h3>Formato do Arquivo TXT (Obrigatório)</h3>
+                <p>
+                    O arquivo TXT deve seguir o modelo abaixo. Use separadores
+                    <code>================</code> e <code>**********</code> para
+                    delimitar blocos.
+                </p>
+
+                <div
+                    style="
+                        display: flex;
+                        gap: 10px;
+                        margin-top: 15px;
+                        flex-wrap: wrap;
+                    "
+                >
+                    <button
+                        id="btnDownloadModeloFROTA"
+                        class="btn-secondary"
+                        style="width: auto; flex: 1; min-width: 200px"
+                    >
+                        <i class="fas fa-download"></i> Baixar Modelo FROTA
+                    </button>
+                    <button
+                        id="btnDownloadModeloCAC"
+                        class="btn-secondary"
+                        style="width: auto; flex: 1; min-width: 200px"
+                    >
+                        <i class="fas fa-download"></i> Baixar Modelo CAC
+                    </button>
+                    <button
+                        id="btnDownloadModeloCAB"
+                        class="btn-secondary"
+                        style="width: auto; flex: 1; min-width: 200px"
+                    >
+                        <i class="fas fa-download"></i> Baixar Modelo CAB
+                    </button>
+                </div>
+
+                <div id="exemploModelo" style="margin-top: 15px">
+                    <!-- Exemplo será carregado dinamicamente baseado no tipo selecionado -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Página Sobre -->
+        <section id="sobre" class="page">
+            <header>
+                <h1>
+                    <i class="fas fa-info-circle" style="margin-right: 12px"></i>
+                    Sobre o Projeto
+                </h1>
+                <p>
+                    <i class="fas fa-code" style="margin-right: 8px; opacity: 0.9"></i>
+                    Conheça mais sobre o NeoConvertXlsx e sua equipe de desenvolvimento
+                </p>
+            </header>
+            
+            <main class="container">
+                <div class="about-content">
+                    <div class="about-card">
+                        <div class="developer-profile">
+                            <img src="https://avatars.githubusercontent.com/u/49498803?v=4" alt="Desenvolvedor" class="dev-avatar">
+                            <div class="dev-info">
+                                <h2>Desenvolvedor</h2>
+                                <p>KIM INFO TEC</p>
+                                <div class="social-links">
+                                    <a href="https://www.linkedin.com/feed/" target="_blank" class="social-link">
+                                        <i class="fab fa-linkedin"></i> LinkedIn
+                                    </a>
+                                    <a href="https://github.com/kiminfodeveloper" target="_blank" class="social-link">
+                                        <i class="fab fa-github"></i> GitHub
+                                    </a>
+                                </div>
+                                <div class="contact-info">
+                                    <p><i class="fab fa-whatsapp"></i> WhatsApp: +55 11 99123-1629</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="project-description">
+                            <h3>O que é o NeoConvertXlsx?</h3>
+                            <p>
+                                O NeoConvertXlsx é uma ferramenta web avançada desenvolvida pela KIM INFO TEC 
+                                para converter arquivos TXT estruturados em planilhas CSV de forma eficiente 
+                                e segura. O sistema permite processar grandes volumes de dados de diferentes 
+                                fontes e consolidá-los em uma única planilha mestra.
+                            </p>
+                            
+                            <h3>Como Funciona?</h3>
+                            <p>
+                                O processo é simples e intuitivo:
+                            </p>
+                            <ol>
+                                <li>Selecione o tipo de processamento (FROTA, CAC, CAB ou Personalizado)</li>
+                                <li>Configure os campos conforme necessário</li>
+                                <li>Carregue seus arquivos TXT seguindo o padrão definido</li>
+                                <li>Processe os dados diariamente</li>
+                                <li>Gere a planilha final consolidada em formato CSV</li>
+                            </ol>
+                            
+                            <h3>Segurança e Privacidade</h3>
+                            <p>
+                                Todos os processos são realizados localmente no seu navegador. 
+                                Nenhum dado é armazenado em servidores externos ou na nuvem, 
+                                garantindo total privacidade e segurança das suas informações.
+                            </p>
+                            
+                            <div class="github-section">
+                                <h3>Projeto Open Source</h3>
+                                <p>
+                                    O código-fonte do projeto está disponível no GitHub. 
+                                    Contribuições são bem-vindas!
+                                </p>
+                                <a href="https://github.com/kiminfodeveloper/neoConvertXlsx" target="_blank" class="btn-github">
+                                    <i class="fab fa-github"></i> Acessar Repositório
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </section>
+
+        <!-- Página Converter -->
+        <section id="convert" class="page">
+            <header>
+                <h1>
+                    <i class="fas fa-exchange-alt" style="margin-right: 12px"></i>
+                    Converter Arquivos
+                </h1>
+                <p>
+                    <i class="fas fa-file-import" style="margin-right: 8px; opacity: 0.9"></i>
+                    Converta seus arquivos TXT em planilhas CSV de forma rápida e segura
+                </p>
+            </header>
+            <main class="container">
+                <section class="controls-panel">
+                    <h2>
+                        <i
+                            class="fas fa-cog"
+                            style="margin-right: 10px; color: var(--color-primary)"
+                        ></i>
+                        Configuração do Processamento
+                    </h2>
 
         <!-- Modal de Edição e Análise de Modelo -->
         <div id="modalEdicaoModelo" class="modal">
@@ -401,118 +657,45 @@ Aguardando configuração e carregamento do arquivo...</pre
             </div>
         </div>
 
-        <div id="modalAjuda" class="modal">
-            <div class="modal-content">
-                <span class="close-button" id="btnFecharModalAjuda"
-                    >&times;</span
-                >
-                <h2>Como Usar o Conversor Mestre Unificado</h2>
-
-                <p>
-                    Este sistema permite que você consolide dados de vários dias
-                    em uma única planilha CSV mestra, com suporte para
-                    diferentes tipos de processamento.
-                </p>
-
-                <hr />
-
-                <h3>Tipos de Processamento:</h3>
-                <ul>
-                    <li>
-                        <strong>CAC - Consultor:</strong> Processa dados de
-                        consultores com campos específicos.
-                    </li>
-                    <li>
-                        <strong>CAB - Bancário:</strong> Processa dados
-                        bancários com campos específicos.
-                    </li>
-                    <li>
-                        <strong>CUSTOM - Personalizado:</strong> Permite definir
-                        seus próprios campos e colunas.
-                    </li>
-                </ul>
-
-                <hr />
-
-                <h3>Fluxo de Trabalho:</h3>
-                <ol>
-                    <li>
-                        <strong>Selecione o Tipo:</strong> Escolha entre CAC,
-                        CAB ou CUSTOM.
-                    </li>
-                    <li>
-                        <strong>Configure Colunas (se CUSTOM):</strong> Defina
-                        os campos que serão extraídos e quais são obrigatórios.
-                    </li>
-                    <li>
-                        <strong>Insira a Data:</strong> No campo **1**, digite a
-                        data do lote que será processado.
-                    </li>
-                    <li>
-                        <strong>Carregue o Arquivo:</strong> No campo **2**,
-                        selecione o arquivo TXT correspondente.
-                    </li>
-                    <li>
-                        <strong>Processe o Dia:</strong> Clique em **"Processar
-                        e Adicionar Dia"** (**3**). A data avançará
-                        automaticamente.
-                    </li>
-                    <li>
-                        <strong>Repita:</strong> Repita os passos para todos os
-                        dias.
-                    </li>
-                    <li>
-                        <strong>Gere o Final:</strong> Clique em **"Gerar
-                        Planilha FINAL (CSV)"** (**4**) para baixar.
-                    </li>
-                </ol>
-
-                <hr />
-
-                <h3>Formato do Arquivo TXT (Obrigatório)</h3>
-                <p>
-                    O arquivo TXT deve seguir o modelo abaixo. Use separadores
-                    <code>================</code> e <code>**********</code> para
-                    delimitar blocos.
-                </p>
-
-                <div
-                    style="
-                        display: flex;
-                        gap: 10px;
-                        margin-top: 15px;
-                        flex-wrap: wrap;
-                    "
-                >
-                    <button
-                        id="btnDownloadModeloFROTA"
-                        class="btn-secondary"
-                        style="width: auto; flex: 1; min-width: 200px"
-                    >
-                        <i class="fas fa-download"></i> Baixar Modelo FROTA
-                    </button>
-                    <button
-                        id="btnDownloadModeloCAC"
-                        class="btn-secondary"
-                        style="width: auto; flex: 1; min-width: 200px"
-                    >
-                        <i class="fas fa-download"></i> Baixar Modelo CAC
-                    </button>
-                    <button
-                        id="btnDownloadModeloCAB"
-                        class="btn-secondary"
-                        style="width: auto; flex: 1; min-width: 200px"
-                    >
-                        <i class="fas fa-download"></i> Baixar Modelo CAB
-                    </button>
+        <!-- Footer -->
+        <footer class="site-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>NeoConvertXlsx</h3>
+                    <p>Ferramenta de conversão TXT para CSV</p>
+                    <p>Todos os processos são locais - Nenhum dado é armazenado na nuvem</p>
                 </div>
-
-                <div id="exemploModelo" style="margin-top: 15px">
-                    <!-- Exemplo será carregado dinamicamente baseado no tipo selecionado -->
+                
+                <div class="footer-section">
+                    <h3>Desenvolvido por</h3>
+                    <p>KIM INFO TEC</p>
+                    <p><i class="fab fa-whatsapp"></i> +55 11 99123-1629</p>
+                    <div class="footer-social">
+                        <a href="https://www.linkedin.com/feed/" target="_blank">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://github.com/kiminfodeveloper" target="_blank">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Links Úteis</h3>
+                    <ul>
+                        <li><a href="#inicio">Início</a></li>
+                        <li><a href="#convert">Converter</a></li>
+                        <li><a href="#sobre">Sobre</a></li>
+                        <li><a href="https://github.com/kiminfodeveloper/neoConvertXlsx" target="_blank">GitHub</a></li>
+                    </ul>
                 </div>
             </div>
-        </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 KIM INFO TEC. Todos os direitos reservados.</p>
+            </div>
+        </footer>
 
-        <script src="script.js"></script>
+        <script src="src/js/main.js"></script>
     </body>
 </html>

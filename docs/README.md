@@ -1,0 +1,227 @@
+# NeoConvertXlsx - Conversor Mestre TXT para Planilha CSV
+
+![Conversor Mestre TXT para Planilha CSV](https://img.shields.io/badge/Versão-1.0.0-blue.svg)
+![Licença](https://img.shields.io/badge/Licença-MIT-green.svg)
+
+## Descrição
+
+O NeoConvertXlsx é uma ferramenta web que converte arquivos TXT estruturados em planilhas CSV consolidadas. Ele permite processar dados de diferentes dias e gerar uma planilha mestra unificada, com suporte para três tipos de processamento: CAC (Consultor), CAB (Bancário) e CUSTOM (Personalizado).
+
+A aplicação oferece uma interface moderna e intuitiva com recursos como:
+
+-   Modo claro e escuro
+-   Processamento por lotes de diferentes dias
+-   Validação de campos obrigatórios
+-   Detecção automática de campos em arquivos modelo
+-   Geração de modelos de entrada
+
+## Recursos
+
+### Tipos de Processamento
+
+1. **CAC/CAB FROTA - Sistema Principal**
+
+    - Campos: Solicitante, Identificação, Motivo, Contrato/CNPJ, Banco, Origem, Omni, Referência
+    - Campos obrigatórios: Solicitante, Identificação, Motivo, Contrato/CNPJ, Banco
+
+2. **CAC - Consultor**
+
+    - Campos: Consultor, Matricula, Motivo, Contrato/CNPJ, Banco, Ligação, Omni, Referencia
+    - Campos obrigatórios: Consultor, Matricula, Motivo, Contrato/CNPJ, Banco
+
+3. **CAB - Bancário**
+
+    - Campos: Bancário, CPF, Agencia, Banco, Produto, CNPJ/Contrato, Motivo, Evento, Descricao, Omni, Referencia
+    - Campos obrigatórios: Bancário, CPF, Banco, Produto, CNPJ/Contrato
+
+4. **CUSTOM - Personalizado**
+    - Permite definir campos personalizados
+    - Possibilidade de marcar campos como obrigatórios
+    - Geração de modelo TXT personalizado
+
+### Funcionalidades Principais
+
+-   Interface responsiva com modo claro/escuro
+-   Processamento sequencial de arquivos por dia
+-   Validação de campos obrigatórios
+-   Feedback visual em tempo real
+-   Geração automática de nomes de arquivos com datas
+-   Análise automática de arquivos modelo
+-   Download direto da planilha final em formato CSV
+
+## Estrutura do Projeto
+
+```
+neoConvertXlsx/
+├── src/
+│   ├── css/
+│   │   └── style.css           # Estilização e temas
+│   ├── js/
+│   │   └── main.js             # Lógica de processamento e interatividade
+│   └── assets/
+│       └── images/             # Imagens e recursos visuais
+├── docs/
+│   └── README.md               # Esta documentação
+├── index.html                  # Página principal da aplicação
+└── LICENSE                     # Licença do projeto
+```
+
+## Como Usar
+
+### 1. Selecionar o Tipo de Processamento
+
+Escolha entre CAC, CAB ou CUSTOM no seletor "Tipo de Processamento".
+
+### 2. Configurar Colunas (somente para CUSTOM)
+
+Se escolher o tipo CUSTOM:
+
+-   Adicione os campos necessários
+-   Marque quais campos são obrigatórios
+-   Gere um modelo TXT personalizado
+
+### 3. Processar Dados Diários
+
+Siga estes passos para cada dia de dados:
+
+1. Insira a data de inserção do lote
+2. Carregue o arquivo TXT correspondente
+3. Clique em "Processar e Adicionar Dia"
+4. Repita para todos os dias necessários
+
+### 4. Gerar Planilha Final
+
+Após processar todos os dias desejados, clique em "Gerar Planilha FINAL (CSV)" para baixar o arquivo consolidado.
+
+## Formato do Arquivo TXT
+
+Os arquivos TXT devem seguir um formato específico com separadores:
+
+### Formato CAC/CAB FROTA:
+
+```
+Solicitante: Nome do Solicitante
+Identificação: ID123456
+Motivo: Descrição detalhada do motivo
+Contrato/CNPJ: 12345678
+Banco: Nome do Banco
+Origem: Canal de origem
+
+Omni: 987654
+Referência: 543210
+Tabulações incorretas, OMNI não espelhada
+==============================================================
+***********************************************************
+
+Solicitante: Outro Solicitante
+Identificação: ID654321
+Motivo: Outro motivo de alteração
+Contrato/CNPJ: 87654321
+Banco: Bradesco
+Origem: Telefone
+
+Omni: 987654
+Referência: 102938
+Tabulações incorretas, OMNI não espelhada
+==============================================================
+***********************************************************
+```
+
+### Formato Genérico:
+
+```
+Campo1: Valor do Campo 1
+Campo2: Valor do Campo 2
+
+==============================================================
+***********************************************************
+
+Campo1: Outro Valor 1
+Campo2: Outro Valor 2
+
+==============================================================
+***********************************************************
+```
+
+### Separadores
+
+-   `==============================================================` - Separador principal entre blocos
+-   `***********************************************************` - Separador secundário entre blocos
+
+## Problemas Conhecidos e Correções
+
+### Problema com campos Omni/Referencia
+
+**Problema**: Anteriormente, ao usar os tipos de processamento CAC ou CAB, os campos "Omni" e "Referencia" estavam sendo combinados em uma única coluna. Especificamente:
+
+-   O campo Omni estava recebendo o valor "987654 Referencia: 543210" (incluindo o valor e o cabeçalho do campo Referencia)
+-   O campo Referencia estava ficando vazio
+
+### Problema com campos CPF/Agencia no CAB
+
+**Problema**: No processamento CAB, os campos "CPF" e "Agencia" estavam sendo combinados em uma única coluna. Especificamente:
+
+-   O campo CPF estava recebendo valores como "123.456.789-00 | Agencia: 0001"
+-   O campo Agencia estava ficando vazio
+
+**Solução**: Foram feitas correções para garantir consistência entre os nomes dos campos na configuração e nos modelos:
+
+1. Atualização dos modelos CAC e CAB para garantir uma separação adequada entre campos
+2. Correção da consistência nos nomes dos campos na configuração para corresponder aos modelos
+3. Remoção de acentos nos nomes dos campos na configuração para corresponder aos modelos
+
+## Tecnologias Utilizadas
+
+-   HTML5
+-   CSS3 (com variáveis CSS para temas)
+-   JavaScript (ES6+)
+-   Font Awesome (para ícones)
+-   Google Fonts (Roboto e Inter)
+
+## Instalação
+
+1. Clone este repositório:
+
+    ```
+    git clone https://github.com/kiminfodeveloper/neoConvertXlsx.git
+    ```
+
+2. Navegue até o diretório do projeto:
+
+    ```
+    cd neoConvertXlsx
+    ```
+
+3. Abra o arquivo `index.html` em seu navegador preferido
+
+> **Nota**: Todos os arquivos necessários estão organizados nas pastas `src/css/`, `src/js/` e `src/assets/`.
+
+## Contribuição
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests.
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+## Autor
+
+Desenvolvido por **KIM INFO TEC**
+
+-   WhatsApp: +55 11 99123-1629
+-   [LinkedIn](https://www.linkedin.com/feed/)
+-   [GitHub](https://github.com/kiminfodeveloper)
+
+Desenvolvido com ❤️ para facilitar a conversão de dados estruturados em planilhas.
+
+## Suporte
+
+Para suporte, utilize a seção de Issues do GitHub ou entre em contato diretamente.
+
+---
+
+## Informações Adicionais
+
+Criado por KIM INFO TEC 2025
+
+Os arquivos são armazenados localmente e não possuem nenhuma saída de dados.

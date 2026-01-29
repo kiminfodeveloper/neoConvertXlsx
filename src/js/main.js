@@ -292,14 +292,12 @@ function processarBloco(blocoTexto) {
 
     let textoLimpo = blocoTexto.trim();
 
-    // Remove texto específico do CAC se presente
-    if (selectTipo.value === "CAC") {
-        // Remover ambas as versões do texto problemático
-        textoLimpo = textoLimpo
-            .replace(/Tabulações incorretas, OMNI não espelhada/g, "")
-            .replace(/Tabulacoes incorretas, OMNI nao espelhada/g, "")
-            .trim();
-    }
+    // Remove texto específico indesejado
+    // Remover ambas as versões do texto problemático
+    textoLimpo = textoLimpo
+        .replace(/Tabulações incorretas, OMNI não espelhada/g, "")
+        .replace(/Tabulacoes incorretas, OMNI nao espelhada/g, "")
+        .trim();
 
     // Processar linha por linha para extrair campos corretamente
     const linhas = textoLimpo.split("\n");
@@ -1152,11 +1150,98 @@ if (modalEdicaoModelo) {
     });
 }
 
+// --- Funções de Navegação entre Páginas ---
+
+function mostrarPagina(pageId) {
+    // Esconder todas as páginas
+    const pages = document.querySelectorAll(".page");
+    pages.forEach((page) => {
+        page.classList.remove("active");
+    });
+
+    // Mostrar a página selecionada
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        targetPage.classList.add("active");
+    }
+
+    // Atualizar links ativos na navbar
+    const navLinks = document.querySelectorAll(".nav-link");
+    navLinks.forEach((link) => {
+        link.classList.remove("active");
+        if (link.getAttribute("data-page") === pageId) {
+            link.classList.add("active");
+        }
+    });
+
+    // Fechar menu mobile se estiver aberto
+    const navMenu = document.querySelector(".nav-menu");
+    const hamburger = document.querySelector(".hamburger");
+    if (navMenu && hamburger) {
+        navMenu.classList.remove("active");
+        hamburger.classList.remove("active");
+    }
+}
+
+// --- Event Listeners para Navegação ---
+
+// Navegação pelos links da navbar
+document.addEventListener("click", function (e) {
+    if (
+        e.target.classList.contains("nav-link") &&
+        e.target.getAttribute("data-page")
+    ) {
+        e.preventDefault();
+        const pageId = e.target.getAttribute("data-page");
+        mostrarPagina(pageId);
+
+        // Scroll para o topo
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+});
+
+// Menu hamburguer para mobile
+const hamburger = document.querySelector(".hamburger");
+const navMenu = document.querySelector(".nav-menu");
+
+if (hamburger && navMenu) {
+    hamburger.addEventListener("click", function () {
+        navMenu.classList.toggle("active");
+        hamburger.classList.toggle("active");
+    });
+}
+
+// Fechar menu mobile ao clicar fora
+document.addEventListener("click", function (e) {
+    if (navMenu && hamburger) {
+        if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+            navMenu.classList.remove("active");
+            hamburger.classList.remove("active");
+        }
+    }
+});
+
+// Botão Versão 2.0 - Mostrar mensagem de em breve
+const btnVersao2 = document.getElementById("btnVersao2");
+if (btnVersao2) {
+    btnVersao2.addEventListener("click", function () {
+        alert(
+            "Em breve teremos novidades! 🚀\n\nEstamos trabalhando na próxima geração do NeoConvertXlsx com novas funcionalidades incríveis."
+        );
+    });
+}
+
 // Inicialização - Aguardar DOM estar pronto
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", inicializar);
+    document.addEventListener("DOMContentLoaded", function () {
+        inicializar();
+        // Mostrar página inicial por padrão
+        mostrarPagina("inicio");
+    });
 } else {
     inicializar();
+    // Mostrar página inicial por padrão
+    mostrarPagina("inicio");
 }
 
 // --- Funções de Tema ---
