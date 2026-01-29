@@ -58,6 +58,11 @@
                         >**Tipo de Processamento:**</label
                     >
                     <select id="tipoProcessamento" class="select-input">
+                        <option value="CAC_CAB_FROTA">
+                            CAC/CAB FROTA - Sistema Principal (Campos:
+                            Solicitante, Identificação, Motivo, Contrato/CNPJ,
+                            Banco, Origem, Omni, Referência)
+                        </option>
                         <option value="CAC">
                             CAC - Consultor (Campos: Consultor, Matricula,
                             Motivo, Contrato/CNPJ, Banco, Ligação, Omni,
@@ -398,7 +403,9 @@ Aguardando configuração e carregamento do arquivo...</pre
 
         <div id="modalAjuda" class="modal">
             <div class="modal-content">
-                <span class="close-button">&times;</span>
+                <span class="close-button" id="btnFecharModalAjuda"
+                    >&times;</span
+                >
                 <h2>Como Usar o Conversor Mestre Unificado</h2>
 
                 <p>
@@ -477,6 +484,13 @@ Aguardando configuração e carregamento do arquivo...</pre
                         flex-wrap: wrap;
                     "
                 >
+                    <button
+                        id="btnDownloadModeloFROTA"
+                        class="btn-secondary"
+                        style="width: auto; flex: 1; min-width: 200px"
+                    >
+                        <i class="fas fa-download"></i> Baixar Modelo FROTA
+                    </button>
                     <button
                         id="btnDownloadModeloCAC"
                         class="btn-secondary"

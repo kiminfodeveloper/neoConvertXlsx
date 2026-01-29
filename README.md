@@ -19,17 +19,22 @@ A aplicação oferece uma interface moderna e intuitiva com recursos como:
 
 ### Tipos de Processamento
 
-1. **CAC - Consultor**
+1. **CAC/CAB FROTA - Sistema Principal**
+
+    - Campos: Solicitante, Identificação, Motivo, Contrato/CNPJ, Banco, Origem, Omni, Referência
+    - Campos obrigatórios: Solicitante, Identificação, Motivo, Contrato/CNPJ, Banco
+
+2. **CAC - Consultor**
 
     - Campos: Consultor, Matricula, Motivo, Contrato/CNPJ, Banco, Ligação, Omni, Referencia
     - Campos obrigatórios: Consultor, Matricula, Motivo, Contrato/CNPJ, Banco
 
-2. **CAB - Bancário**
+3. **CAB - Bancário**
 
     - Campos: Bancário, CPF, Agencia, Banco, Produto, CNPJ/Contrato, Motivo, Evento, Descricao, Omni, Referencia
     - Campos obrigatórios: Bancário, CPF, Banco, Produto, CNPJ/Contrato
 
-3. **CUSTOM - Personalizado**
+4. **CUSTOM - Personalizado**
     - Permite definir campos personalizados
     - Possibilidade de marcar campos como obrigatórios
     - Geração de modelo TXT personalizado
@@ -84,6 +89,38 @@ Após processar todos os dias desejados, clique em "Gerar Planilha FINAL (CSV)" 
 ## Formato do Arquivo TXT
 
 Os arquivos TXT devem seguir um formato específico com separadores:
+
+### Formato CAC/CAB FROTA:
+
+```
+Solicitante: Nome do Solicitante
+Identificação: ID123456
+Motivo: Descrição detalhada do motivo
+Contrato/CNPJ: 12345678
+Banco: Nome do Banco
+Origem: Canal de origem
+
+Omni: 987654
+Referência: 543210
+Tabulações incorretas, OMNI não espelhada
+==============================================================
+***********************************************************
+
+Solicitante: Outro Solicitante
+Identificação: ID654321
+Motivo: Outro motivo de alteração
+Contrato/CNPJ: 87654321
+Banco: Bradesco
+Origem: Telefone
+
+Omni: 987654
+Referência: 102938
+Tabulações incorretas, OMNI não espelhada
+==============================================================
+***********************************************************
+```
+
+### Formato Genérico:
 
 ```
 Campo1: Valor do Campo 1

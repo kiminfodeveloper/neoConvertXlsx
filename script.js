@@ -1,5 +1,49 @@
 // Configurações pré-definidas para cada tipo
 const CONFIGURACOES_TIPO = {
+    CAC_CAB_FROTA: {
+        campos: [
+            "Solicitante",
+            "Identificação",
+            "Motivo",
+            "Contrato/CNPJ",
+            "Banco",
+            "Origem",
+            "Omni",
+            "Referência",
+        ],
+        camposObrigatorios: [
+            "Solicitante",
+            "Identificação",
+            "Motivo",
+            "Contrato/CNPJ",
+            "Banco",
+        ],
+        nomeArquivo: "Planilha_CAC_CAB_FROTA_Ate_",
+        modelo: `Solicitante: Nome do Solicitante (Obrigatorio)
+Identificação: ID123456 (Obrigatorio)
+Motivo: Descricao detalhada do motivo
+Contrato/CNPJ: 12345678 (Obrigatorio)
+Banco: Nome do Banco (Obrigatorio)
+Origem: Canal de origem
+
+Omni: 987654
+Referência: 543210
+Tabulações incorretas, OMNI não espelhada
+==============================================================
+***********************************************************
+Solicitante: Segundo Solicitante
+Identificação: ID654321
+Motivo: Outro motivo de alteracao
+Contrato/CNPJ: 87654321
+Banco: Bradesco
+Origem: Telefone
+
+Omni: 987654
+Referência: 102938
+Tabulações incorretas, OMNI não espelhada
+==============================================================
+***********************************************************`,
+    },
     CAC: {
         campos: [
             "Consultor",
@@ -143,7 +187,7 @@ const modalAjuda = document.getElementById("modalAjuda");
 const btnAjuda = document.getElementById("btnAjuda");
 const btnToggleTema = document.getElementById("btnToggleTema");
 const iconTema = document.getElementById("iconTema");
-const btnFecharModal = document.getElementsByClassName("close-button")[0];
+const btnFecharModal = document.getElementById("btnFecharModalAjuda");
 const btnDownloadModeloCAC = document.getElementById("btnDownloadModeloCAC");
 const btnDownloadModeloCAB = document.getElementById("btnDownloadModeloCAB");
 const btnGerarModeloCustom = document.getElementById("btnGerarModeloCustom");
@@ -984,6 +1028,20 @@ if (btnAjuda) {
 }
 
 // Download dos modelos
+const btnDownloadModeloFROTA = document.getElementById(
+    "btnDownloadModeloFROTA"
+);
+
+if (btnDownloadModeloFROTA) {
+    btnDownloadModeloFROTA.onclick = function () {
+        baixarArquivo(
+            CONFIGURACOES_TIPO.CAC_CAB_FROTA.modelo,
+            "modelo_frota_txt.txt"
+        );
+        log("Modelo CAC/CAB FROTA baixado com sucesso.");
+    };
+}
+
 if (btnDownloadModeloCAC) {
     btnDownloadModeloCAC.onclick = function () {
         baixarArquivo(CONFIGURACOES_TIPO.CAC.modelo, "modelo_cac_txt.txt");
@@ -1073,6 +1131,15 @@ if (conteudoOriginal) {
 if (btnAplicarCampos) {
     btnAplicarCampos.onclick = function () {
         aplicarCamposDetectados();
+    };
+}
+
+// Fechar modal de edição
+if (btnFecharModalEdicao) {
+    btnFecharModalEdicao.onclick = function () {
+        if (modalEdicaoModelo) {
+            modalEdicaoModelo.style.display = "none";
+        }
     };
 }
 
